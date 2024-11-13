@@ -1,0 +1,2 @@
+# Restrict direct pushes to workflow files to require review for all except team-devops
+.github/workflows/* @team-devops
