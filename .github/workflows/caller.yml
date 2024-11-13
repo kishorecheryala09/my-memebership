@@ -1,4 +1,4 @@
-name: MyMembership Caller Workflow
+name: MyMembership Caller Workflow2
 
 on:
   workflow_dispatch:
