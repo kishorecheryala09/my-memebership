@@ -1,2 +1,0 @@
-# Restrict direct pushes to workflow files to require review for all except team-devops
-.github/workflows/* @carved-rock-fitness-gym/team-devops
