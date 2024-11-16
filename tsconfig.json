@@ -16,6 +16,7 @@
 		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true,
 		"types": ["vite/client"]
+		"sourceMap": true
 	},
 	"include": ["src"],
 	"references": [{ "path": "./tsconfig.node.json" }]
