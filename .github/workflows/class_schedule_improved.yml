@@ -66,9 +66,6 @@ jobs:
           # Run comprehensive test suite with coverage
           docker run --rm carved-rock/class-schedule-frontend:test npm run test:coverage -- --maxWorkers=4 
           
-          # Generate test reports
-          docker run --rm carved-rock/class-schedule-frontend:test npm run test:report
-          
       - name: Build Production Image
         uses: docker/build-push-action@v5
         with:
