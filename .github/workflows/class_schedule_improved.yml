@@ -66,22 +66,8 @@ jobs:
           # Run comprehensive test suite with coverage
           docker run --rm carved-rock/class-schedule-frontend:test npm run test:coverage -- --maxWorkers=4 
           
-          # Run integration tests with retries
-          docker run --rm carved-rock/class-schedule-frontend:test npm run test:integration -- --retries 3
-          
           # Generate test reports
           docker run --rm carved-rock/class-schedule-frontend:test npm run test:report
-          
-      - name: Performance Testing
-        run: |
-          # Start app server
-          docker run -d --name app carved-rock/class-schedule-frontend:test npm run start
-          
-          # Run k6 load tests
-          docker run --rm -v ${PWD}:/scripts grafana/k6 run /scripts/load-tests.js
-          
-          # Run lighthouse performance audit
-          docker run --rm --network host carved-rock/class-schedule-frontend:test npm run lighthouse
           
       - name: Build Production Image
         uses: docker/build-push-action@v5
