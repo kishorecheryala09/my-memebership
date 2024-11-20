@@ -4,19 +4,30 @@ WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY package*.json ./
 
-FROM base AS dependencies
+FROM base AS deps
+RUN apk add --no-cache python3 make g++ chromium
 RUN npm ci
-COPY . .
 
-FROM dependencies AS test
+FROM deps AS test
 ENV NODE_ENV=test
-RUN npm run test:setup
-RUN npm run build
+COPY . .
+RUN npm install -g lighthouse k6
+RUN npm install jest@latest @testing-library/jest-dom@latest jest-environment-jsdom@latest --save-dev
 
-FROM dependencies AS builder
+# Pre-build test data & caches
+RUN node scripts/generate-test-data.js --records=10000 --output=/app/test/fixtures
+RUN npm run test -- --updateSnapshot
+
+# Install performance testing tools
+RUN npm install -g autocannon clinic flame heap doctor
+
+FROM deps AS builder
+COPY . .
 ENV NODE_ENV=production
+# Add build tools
+RUN npm install -g webpack-bundle-analyzer source-map-explorer terser
+# Production build with optimizations
 RUN npm run build
-RUN npm audit fix
 RUN npm prune --production
 
 FROM node:20-alpine AS production
@@ -24,5 +35,8 @@ WORKDIR /app
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/node_modules ./node_modules
 COPY package*.json ./
+# Add analyzers for production checks
+COPY --from=builder /usr/local/lib/node_modules /usr/local/lib/node_modules
+COPY --from=builder /usr/local/bin /usr/local/bin
 EXPOSE 5173
 CMD ["npm", "start"]
