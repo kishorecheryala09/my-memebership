@@ -1,13 +1,7 @@
 name: Personal Training Feature
 
 on:
-    push:
-      branches:
-        - 'feature/**'
-        - main
-      paths:
-        - 'src/features/training/**'
-    workflow_dispatch:
+    workflow_call:
 
 jobs:
   component-testing:
