@@ -3,6 +3,9 @@ name: Class Schedule CI/CD
 on:
     workflow_call:
 
+env:
+  ACTIONS_STEP_DEBUG: true
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
