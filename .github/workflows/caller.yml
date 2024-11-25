@@ -9,7 +9,6 @@ on:
         type: choice
         options:
           - class_schedule
-          - class_schedule_improved
           - membership
           - training
 
@@ -17,10 +16,6 @@ jobs:
   class-schedule:
     if: github.event.inputs.feature == 'class_schedule'
     uses: ./.github/workflows/class_schedule.yml
-
-  class-schedule-improved:
-    if: github.event.inputs.feature == 'class_schedule_improved'
-    uses: ./.github/workflows/class_schedule_improved.yml
 
   membership:
     if: github.event.inputs.feature == 'membership'
