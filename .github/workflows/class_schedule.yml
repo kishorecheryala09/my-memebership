@@ -1,7 +1,17 @@
 name: Class Schedule CI/CD
 
 on:
-  workflow_call:
+    push:
+      paths:
+        - 'src/features/class-schedule/**'
+        - 'Dockerfile'
+      branches:
+        - main
+    pull_request:
+      paths:
+        - 'src/features/class-schedule/**'
+        - 'Dockerfile'
+    workflow_dispatch:
 
 jobs:
   build-and-test:
