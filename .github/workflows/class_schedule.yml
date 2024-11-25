@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Get DVLS secret
-        uses: adbertram/devolutions-server-get-entry@v1
+        uses: adbertram/devolutions-server-get-entry@v0.01
         with:
           server_url: 'https://52.249.182.1/dvls1'
           app_key: '76c84f6c-92c3-4e9a-ad4d-c23d9428b7b0'
