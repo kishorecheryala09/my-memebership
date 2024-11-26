@@ -3,9 +3,6 @@ name: Class Schedule CI/CD
 on:
     workflow_call:
 
-env:
-  ACTIONS_STEP_DEBUG: true
-
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -13,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: ./.github/actions/setup-node
+      - uses: carved-rock-fitness-gym/.github/actions/deployment/setup-node@v1
         with:
             node-version: '20.x'
             cache: 'npm'
@@ -21,10 +18,23 @@ jobs:
 
       - name: Run lint
         run: NODE_OPTIONS=--experimental-vm-modules npm run lint
+      - name: Run lint
+        run: NODE_OPTIONS=--experimental-vm-modules npm run lint
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          load: true
+          tags: carved-rock/class-schedule:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       - name: Build Docker image
         uses: docker/build-push-action@v5
         with:
@@ -41,7 +51,18 @@ jobs:
           start: npm run dev
           wait-on: 'http://localhost:5173'
           config-file: cypress.config.ts
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v5
+        with:
+          start: npm run dev
+          wait-on: 'http://localhost:5173'
+          config-file: cypress.config.ts
 
+  deploy-staging:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: staging
   deploy-staging:
     needs: build-and-test
     runs-on: ubuntu-latest
@@ -50,12 +71,22 @@ jobs:
     
     steps:
       - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
       
       - name: Build for staging
         run: |
           echo "Building for staging environment..."
           docker build -t carved-rock/class-schedule:staging .
+      - name: Build for staging
+        run: |
+          echo "Building for staging environment..."
+          docker build -t carved-rock/class-schedule:staging .
 
+      - name: Deploy to staging
+        run: |
+          echo "Deploying class schedule feature to staging..."
+          echo "Running smoke tests against staging deployment..."
       - name: Deploy to staging
         run: |
           echo "Deploying class schedule feature to staging..."
@@ -66,7 +97,14 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     environment: production
+  deploy-production:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: production
     
+    steps:
+      - uses: actions/checkout@v4
     steps:
       - uses: actions/checkout@v4
       
@@ -74,7 +112,14 @@ jobs:
         run: |
           echo "Building for production environment..."
           docker build -t carved-rock/class-schedule:production .
+      - name: Build for production
+        run: |
+          echo "Building for production environment..."
+          docker build -t carved-rock/class-schedule:production .
 
+      - name: Deploy to production
+        run: |
+          echo "Deploying class schedule feature to production..."
       - name: Deploy to production
         run: |
           echo "Deploying class schedule feature to production..."

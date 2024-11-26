@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - uses: ./.github/actions/setup-node
+      - uses: carved-rock-fitness-gym/.github/actions/deployment/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
           clean-install: 'false'
