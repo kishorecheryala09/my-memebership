@@ -23,16 +23,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: ./.github/actions/setup-node
         with:
-            node-version: '20.x'
-            cache: 'npm'
-
-      - name: Install dependencies
-        run: |
-          rm -rf node_modules package-lock.json
-          npm install
+          node-version: '20.x'
+          cache: 'npm'
+          clean-install: 'true'
 
       - name: Lint
         run: npx eslint 'src/features/membership/**' --max-warnings 0
