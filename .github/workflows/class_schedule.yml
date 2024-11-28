@@ -63,14 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     environment: staging
-  deploy-staging:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    environment: staging
     
-    steps:
-      - uses: actions/checkout@v4
     steps:
       - uses: actions/checkout@v4
       
@@ -97,14 +90,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     environment: production
-  deploy-production:
-    needs: deploy-staging
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    environment: production
     
-    steps:
-      - uses: actions/checkout@v4
     steps:
       - uses: actions/checkout@v4
       
