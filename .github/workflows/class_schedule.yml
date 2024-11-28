@@ -16,6 +16,7 @@ jobs:
         with:
           app-id: '1072420'
           private-key: |
+            -----BEGIN RSA PRIVATE KEY-----
             MIIEpgIBAAKCAQEA4vnPy0kEJPVjEVWjnKBd4RX0kJ6+4+/nkuY+WVjfyy3QbOUt
             zImVFdTP8BNX0aOj1IAvSvw7SlCGT/OD0rNehkg+3zvA7/ZnUuW/TaFUOHljZJ/C
             eDuCmRPh/zcmzv+OVt9ok+CqR2F0l9yJ3gR1PeIDDmpOjDFr+qwB6PuCp9ymM3y2
@@ -40,8 +41,9 @@ jobs:
             CCbOU7x8k/Qdw8JgqqIfZ38c2iZJE5qacUC6ZN+WT2aKc6iAlLvHNqbydbPCjaJr
             VcMyd00FAoGBAIjFgCyODQMCg044qJhrlEt7LcOsGQGBL3sG3UtheDAN1fqC1nYR
             oPIBNd9g9GbjfCJaBWLLWh/A5kFo1ftzknPh65KJN4xfEuxFXDnFLKRyw8d6Xabf
-            uk5uLvmo9Uw0/q8TOI/mhiJsEoFpgoghC72/HVHOJwNaVrDTM4Chdl5X'
-    
+            uk5uLvmo9Uw0/q8TOI/mhiJsEoFpgoghC72/HVHOJwNaVrDTM4Chdl5X
+            -----END RSA PRIVATE KEY-----
+
       - name: Check out shared repo
         uses: actions/checkout@v4
         with:
