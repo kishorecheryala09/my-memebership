@@ -10,7 +10,48 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: carved-rock-fitness-gym/.github/actions/deployment/setup-node@main
+      - name: Generate token
+        id: generate_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: '1072420'
+          private-key: |
+            MIIEpgIBAAKCAQEA4vnPy0kEJPVjEVWjnKBd4RX0kJ6+4+/nkuY+WVjfyy3QbOUt
+            zImVFdTP8BNX0aOj1IAvSvw7SlCGT/OD0rNehkg+3zvA7/ZnUuW/TaFUOHljZJ/C
+            eDuCmRPh/zcmzv+OVt9ok+CqR2F0l9yJ3gR1PeIDDmpOjDFr+qwB6PuCp9ymM3y2
+            QA9eIFcvGsiJphZNKHdOIbyAs06CQypWEqXrA1rcgVbYjVEaoIs700H9Ajt3MuUl
+            XMeu/dRe6dBuMoqPaNWl9gLeQb9KwmbbrIITWKcUKze+ZjZ/+b+WFJR+zIR+E6L1
+            MDfO2aHqq1yUFUvnvJETgqK3ciatk0Y946FTAQIDAQABAoIBAQCNueMQUmVuFnNn
+            rYveDxzPoX/2lckoVvLIfVBNRftnyRGuDWSNpRMccKfuhoV9d6qi0++z6M+01Zco
+            cSvM8weA3be0eIE+1SMrVh4gAS6vnMx9Vmx92trvbsTdMbjf5B8jC5knTU/GBoph
+            EOpdYXc7ztaNt7+YNnvwKFuA+RtaaHUngznvzeSwhurCNz8BSOKsON0obMxR2Db0
+            Uc3xiSxeEuWHGIBVhdYc/xW9ksLK8bxhHQxaNeufU4XC17q0n7DkvW7jsZ1GGJ3y
+            9318utKECjrbXTi7ptlm1gRUPXd8E9JvD6KolWcpBA307p5C3zi6FZblWltUjvAl
+            9gvR7KXhAoGBAP+6LUxBO5AMyUcm54uqcgdBres8a4YvdFRDupFi7nFty2ilr2d8
+            TvLS48Rku4n6Nu7nYOVEpzuTYiPjXrZcw/pYs4HexXTYiwANDasWLTbOk6D3A2wy
+            /+/0QBxyAXAR+msgPlaJqy31dsd9w6HlfuuZe/jnE+q6xzgb0UspYGSVAoGBAOM3
+            yNe3PKyXuroj/Gjw/rhALCglTQuW4QsmTi99VoXpsWlcX5DoiEUJqjOzyUvsADuO
+            VQjvaYtxW6Prko0n39iisTndzvc7WZN9s0VBScS2PL7GzWmakvqvVYqcmF06tmyq
+            fMs9ls1RP+aNntTgDhKjIwK9+18CQNBB+yLyjY29AoGBAOYcRX6EhHBO0R9xZpFK
+            wmi9NR6js61/LhJVD6CbgSwYPBziWj+on/HoyoOCkS7LNHstQQeNC16UdI8Onb9D
+            IiY3gu+t4cgOwqU9GbuFrRHQOQ9ytmW6TotBIh92hsytoMScsvtzzdEBO+yuwkcA
+            F4ExD1kdtdJWV8WpYl9b0B0xAoGBAMOJS0cQwp9JCAGOXHa3Bo3rc9SsnQwfMNXW
+            hixqMZ6WiP3B5+AdrL+03IsX6mBy3ZRjHZzN48eDqzh6zyi4qvOUtu20i5rJsYGz
+            CCbOU7x8k/Qdw8JgqqIfZ38c2iZJE5qacUC6ZN+WT2aKc6iAlLvHNqbydbPCjaJr
+            VcMyd00FAoGBAIjFgCyODQMCg044qJhrlEt7LcOsGQGBL3sG3UtheDAN1fqC1nYR
+            oPIBNd9g9GbjfCJaBWLLWh/A5kFo1ftzknPh65KJN4xfEuxFXDnFLKRyw8d6Xabf
+            uk5uLvmo9Uw0/q8TOI/mhiJsEoFpgoghC72/HVHOJwNaVrDTM4Chdl5X'
+    
+      - name: Check out shared repo
+        uses: actions/checkout@v4
+        with:
+          repository: carved-rock-fitness-gym/.github
+          ref: main
+          token: ${{ steps.generate_token.outputs.token }}
+          path: ./.github/actions/deployment
+
+      - name: Setup Node
+        uses: ./.github/actions/deployment/setup-node@main
         with:
             node-version: '20.x'
             cache: 'npm'
