@@ -10,16 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check out shared repo
-        uses: actions/checkout@v4
-        with:
-          repository: carved-rock-fitness-gym/.github
-          ref: main
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: ./.github/actions/deployment
-
       - name: Setup Node
-        uses: ./.github/actions/deployment/setup-node@main
+        uses: carved-rock-fitness-gym/.github/actions/deployment/setup-node@main
         with:
             node-version: '20.x'
             cache: 'npm'
