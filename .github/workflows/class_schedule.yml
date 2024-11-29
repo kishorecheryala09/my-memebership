@@ -15,7 +15,7 @@ jobs:
         uses: actions/create-github-app-token@v1
         with:
           app-id: '1073245'
-          private-key: >
+          private-key: |
             -----BEGIN RSA PRIVATE KEY-----
             MIIEowIBAAKCAQEAubpQlxscbbjsp+l0UpZdfb45z/dKCtztg52SZmJYcYnA1Kbw
             wF8m5ij1OHFBA7nCplcKlZDaOHzDPNjGfi2XyEmVH9fJIDnaHP3W4Tqm3c5vAhVV
