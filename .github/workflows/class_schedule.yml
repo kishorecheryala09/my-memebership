@@ -14,8 +14,9 @@ jobs:
         uses: carved-rock-fitness-gym/.github/actions/deployment/setup-node@main
         with:
             node-version: '20.x'
-            cache: 'npm'
-            clean-install: 'false'
+          cache: 'npm'
+          clean-install: 'false'
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run lint
         run: NODE_OPTIONS=--experimental-vm-modules npm run lint
