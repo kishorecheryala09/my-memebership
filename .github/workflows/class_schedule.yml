@@ -15,7 +15,7 @@ jobs:
         with:
           repository: carved-rock-fitness-gym/.github
           ref: main
-          token: ${{ github.token }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           path: ./.github/actions/deployment
 
       - name: Setup Node
