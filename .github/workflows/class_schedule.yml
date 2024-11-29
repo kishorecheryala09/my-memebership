@@ -10,46 +10,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Generate token
-        id: generate_token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: '1073245'
-          private-key: |
-            -----BEGIN RSA PRIVATE KEY-----
-            MIIEowIBAAKCAQEAubpQlxscbbjsp+l0UpZdfb45z/dKCtztg52SZmJYcYnA1Kbw
-            wF8m5ij1OHFBA7nCplcKlZDaOHzDPNjGfi2XyEmVH9fJIDnaHP3W4Tqm3c5vAhVV
-            OsRADp3Y5bK1eBA145GFYGX19+FvfrYhmm98TRVg55qoDswDLakN8qccog3dKQ2W
-            wwy8d9SjRY3KVDpPZ8cu8sxIkRLbRIAjaQPVFt2Tx3L+BMFd+8wHqq6JWc42b9ra
-            IVYRvxRB+Ogay7nGccH5cqCSgWlG20+nW8hI6yI5e06Nn1d8pTdp8I1PwtNLsxrk
-            o7C94NYtM6u3DDckZ4I4hcY6pn1JVNxnK7djkwIDAQABAoIBAQCbOeLdR+Vstt/k
-            PrPfyph83Z4H+JBDn/5KwEl5lLyCuDUYBia1QVGLj7PT5qQF7x2GVL0d4CDikTPE
-            CRFsp8JxvT4LjRgl/PQUwvry50hLnZsdzKKdKSS4kqiS4dfVbwb7Gca1mMII2LuM
-            1cAkCQWEj1ecep/3Lf+CDAcCRTUjIrKxZMi8SgiF0XRPHFoHXdEZbwwwZR+CY2EU
-            inqEmYra64ryfqJwCH2Ddm4D4Gwh5upuRU5R6hj1y30f4FDGJ7b4kd4w1K05c/gs
-            gdMRNYBDgKw+rVE/V40EnyITa2ZXakSHaTXOyLx3sYBh8kao39X8eMTfwAr8Xie4
-            BbWMj03BAoGBANxBXa4lHa5QIi7dKetpVqg0e2wPeMbr1WgCEgkTKTY2Gr5agthn
-            /wS8thWqpTyr9DV821btwhVzYNfRL6bY2hpUxx8z7LAqCwBkwGtwoWtg67ceuXbC
-            zAWYpdVBWxAG8tZF0wEzcTtIq0t4y7fGUayND4xlQqHKxzpv2OgZPrZRAoGBANfe
-            e3f0sZd4dahxUsALR3Hiv3KdQE6ep74+2iCCT3eIPQZcCizkE4ZBPsl3y2GzOxg6
-            cTja592sffrlE1Ei7UuzpflBtWEmHFb39PvMmf3eQuLxbLfBx3cHk48oS6zfGsv1
-            TCn0vxHS+2yUkNu/RXaGR44vPc4jF7rU6RxCKu6jAoGAebehxo/6VA8ypMVR2idv
-            XSsLnc77BqrjV0P1pZAyMSQ7KUCpmF/4PSzwTw7rm5jHLxvdtq9TlzkYpouSkti5
-            xt1c4PB39250f/Yto/ItMkLwYFUZVvkVeG5ADpa8dSHx5tnVXo+IHqPtDZsmsVtm
-            XT3i/soixXhjGvceXj09O9ECgYA2CEY3XFQnactpghQIZcpYQz1QXvP9udCa2fiX
-            MobZkIxVzyvs2JnafPJOU2Hg7o/YHKjCZmirH8XYywXuxSNIU4szvLK9wmBNlHsJ
-            m8jftoZfb7aauDJJJOhWaOuoNZ/rdVa/GbfJqlmsb/NiTZoBdNLsT/7UXgxOg4Rl
-            wlokqQKBgFwEPaM0U86dgPbFvEa3/kKuXdk8NG54imhZLO59nnrYwg+OA+Mo1toA
-            t162x2aYsNyrLAgkW2xasnQyl8mmTWuuXlSPiTEoWHe0dz+li7m+N6uN5gk30n0+
-            ROsROm97Wb70J+L5H5XPrF+uVTCQb9fbxLTxfjKeqoHxVwk/oeWw
-            -----END RSA PRIVATE KEY-----
-
       - name: Check out shared repo
         uses: actions/checkout@v4
         with:
           repository: carved-rock-fitness-gym/.github
           ref: main
-          token: ${{ steps.generate_token.outputs.token }}
+          token: ${{ github.token }}
           path: ./.github/actions/deployment
 
       - name: Setup Node
