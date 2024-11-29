@@ -13,7 +13,7 @@ jobs:
       - name: Setup Node
         uses: carved-rock-fitness-gym/.github/actions/deployment/setup-node@main
         with:
-            node-version: '20.x'
+          node-version: '20.x'
           cache: 'npm'
           clean-install: 'false'
           token: ${{ secrets.GITHUB_TOKEN }}
