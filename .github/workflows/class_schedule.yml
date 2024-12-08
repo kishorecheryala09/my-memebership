@@ -1,59 +1,46 @@
 name: Class Schedule CI/CD
 
 on:
-    workflow_call:
+  workflow_call:
 
 jobs:
   build-and-test:
-    runs-on:
-        group: development
-
+    runs-on: ubuntu-latest
+    
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: carved-rock-fitness-gym/.github/actions/deployment/setup-node@main
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           cache: 'npm'
-          clean-install: 'false'
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run lint
-        run: NODE_OPTIONS=--experimental-vm-modules npm run lint
+      - name: Install dependencies
+        run: npm install
+
       - name: Run lint
         run: NODE_OPTIONS=--experimental-vm-modules npm run lint
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
 
-      - name: Build Docker image
+      - name: Login to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: 'carvedrockfitness.azurecr.io'
+          username: 'crfitness_registry_dev'
+          password: 'dfdfdfXZp9_K%##8vN!mB#x5'
+
+      - name: Build and Push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: false
-          load: true
-          tags: carved-rock/class-schedule:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-      - name: Build Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: false
-          load: true
-          tags: carved-rock/class-schedule:latest
+          push: true
+          tags: carvedrockfitness.azurecr.io/class-schedule:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Run Cypress tests
-        uses: cypress-io/github-action@v5
-        with:
-          start: npm run dev
-          wait-on: 'http://localhost:5173'
-          config-file: cypress.config.ts
       - name: Run Cypress tests
         uses: cypress-io/github-action@v5
         with:
@@ -63,26 +50,25 @@ jobs:
 
   deploy-staging:
     needs: build-and-test
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     environment: staging
     
     steps:
       - uses: actions/checkout@v4
       
+      - name: Login to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: 'carvedrockfitness.azurecr.io'
+          username: 'crfitness_registry_staging'
+          password: 't6dfd2222$$9_K8vN!mB#x5'
+      
       - name: Build for staging
         run: |
-          echo "Building for staging environment..."
-          docker build -t carved-rock/class-schedule:staging .
-      - name: Build for staging
-        run: |
-          echo "Building for staging environment..."
-          docker build -t carved-rock/class-schedule:staging .
+          docker build -t carvedrockfitness.azurecr.io/class-schedule:staging .
+          docker push carvedrockfitness.azurecr.io/class-schedule:staging
 
-      - name: Deploy to staging
-        run: |
-          echo "Deploying class schedule feature to staging..."
-          echo "Running smoke tests against staging deployment..."
       - name: Deploy to staging
         run: |
           echo "Deploying class schedule feature to staging..."
@@ -90,25 +76,25 @@ jobs:
 
   deploy-production:
     needs: deploy-staging
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     environment: production
     
     steps:
       - uses: actions/checkout@v4
       
+      - name: Login to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: 'carvedrockfitness.azurecr.io'
+          username: 'crfitness_registry_prod'
+          password: '$%%^HggfUUlll'
+      
       - name: Build for production
         run: |
-          echo "Building for production environment..."
-          docker build -t carved-rock/class-schedule:production .
-      - name: Build for production
-        run: |
-          echo "Building for production environment..."
-          docker build -t carved-rock/class-schedule:production .
+          docker build -t carvedrockfitness.azurecr.io/class-schedule:production .
+          docker push carvedrockfitness.azurecr.io/class-schedule:production
 
-      - name: Deploy to production
-        run: |
-          echo "Deploying class schedule feature to production..."
       - name: Deploy to production
         run: |
           echo "Deploying class schedule feature to production..."
