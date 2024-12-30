@@ -11,6 +11,7 @@ on:
           - class_schedule
           - membership
           - training
+          - class_schedule_w_shared_action
 
 jobs:
   class-schedule:
