@@ -26,7 +26,7 @@ jobs:
         uses: devolutions-community/dvls-get-secret-entry@main
         with:
           server_url: 'https://52.249.182.1/dvls1'
-          token: ${{ secrets.DVLS_TOKEN }}
+          token: ${{ env.DVLS_TOKEN }}
           vault_name: 'DevOpsSecrets'
           entry_name: 'azure-acr'
           output_variable: 'ACR_PASSWORD'
