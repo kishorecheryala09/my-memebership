@@ -15,14 +15,14 @@ jobs:
       - name: Login to Devolutions Server
         uses: devolutions-community/dvls-login@main
         with:
-          server_url: 'https://52.249.182.1/dvls/dvls'
+          server_url: 'https://52.249.182.1/dvls'
           app_key: ${{ secrets.DVLS_APP_KEY }}
           app_secret: ${{ secrets.DVLS_APP_SECRET }}
 
       - name: Get Secret from Devolutions Server
         uses: devolutions-community/dvls-get-secret-entry@main
         with:
-          server_url: 'https://52.249.182.1/dvls/dvls'
+          server_url: 'https://52.249.182.1/dvls'
           token: ${{ secrets.DVLS_TOKEN }}
           vault_name: 'DevOpsSecrets'
           entry_name: 'azure-acr'
@@ -57,14 +57,14 @@ jobs:
       - name: Login to Devolutions Server
         uses: devolutions-community/dvls-login@main
         with:
-          server_url: 'https://52.249.182.1/dvls/dvls'
+          server_url: 'https://52.249.182.1/dvls'
           app_key: ${{ secrets.DVLS_APP_KEY }}
           app_secret: ${{ secrets.DVLS_APP_SECRET }}
 
       - name: Get Secret from Devolutions Server
         uses: devolutions-community/dvls-get-secret-entry@main
         with:
-          server_url: 'https://52.249.182.1/dvls/dvls'
+          server_url: 'https://52.249.182.1/dvls'
           token: ${{ secrets.DVLS_TOKEN }}
           vault_name: 'DevOpsSecrets'
           entry_name: 'azure-acr'
