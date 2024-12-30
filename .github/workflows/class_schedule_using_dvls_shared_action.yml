@@ -5,7 +5,6 @@ on:
 
 jobs:
   deploy-staging:
-    needs: build-and-test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     environment: staging
