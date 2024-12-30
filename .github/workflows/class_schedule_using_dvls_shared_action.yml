@@ -11,6 +11,9 @@ jobs:
     
     steps:
       - uses: actions/checkout@v4
+
+      - name: Enable debug logging
+        run: echo "ACTIONS_STEP_DEBUG=true" >> $GITHUB_ENV
       
       - name: Login to Devolutions Server
         uses: devolutions-community/dvls-login@main
