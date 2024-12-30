@@ -19,8 +19,8 @@ jobs:
         uses: devolutions-community/dvls-login@main
         with:
           server_url: 'https://52.249.182.1/dvls1'
-          app_key: ${{ secrets.DVLS_APP_KEY }}
-          app_secret: ${{ secrets.DVLS_APP_SECRET }}
+          app_key: ${{ vars.DVLS_APP_KEY }}
+          app_secret: ${{ vars.DVLS_APP_SECRET }}
 
       - name: Get Secret from Devolutions Server
         uses: devolutions-community/dvls-get-secret-entry@main
