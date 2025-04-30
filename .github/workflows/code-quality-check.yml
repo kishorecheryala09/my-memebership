@@ -103,8 +103,7 @@ jobs:
                   repo,
                   title: issueTitle,
                   body: issueBody,
-                  // Optionally add labels, assignees etc.
-                  // labels: ['linting-error'] 
+                  labels: ['technical-debt']
                 });
                 console.log("Successfully created summary issue.");
               } else {
