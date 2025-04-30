@@ -57,9 +57,12 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |-
             const fs = require('fs');
+            const { repo, owner } = context.repo;
+            const prNumber = context.payload.pull_request.number;
+            let issueBody = "";
+            let totalErrors = 0;
             
             try {
-              // Read the Base64 encoded ESLint results from the step output
               const base64Content = `${{ steps.eslint.outputs.eslint-json-base64 }}`;
               console.log(`Raw Base64 content length from output: ${base64Content.length}`);
               
@@ -68,48 +71,49 @@ jobs:
                 return;
               }
               
-              // Decode the Base64 content
               const eslintResultsContent = Buffer.from(base64Content, 'base64').toString('utf8');
               console.log(`Decoded content length: ${eslintResultsContent.length}`);
 
               const eslintResults = JSON.parse(eslintResultsContent);
               console.log(`Found ${eslintResults.length} files with potential issues after decoding`);
               
+              let violationDetails = [];
+
               for (const result of eslintResults) {
-                const filePath = result.filePath.replace(/^\/github\/workspace\//, '');
-                console.log(`Processing file: ${filePath}, found ${result.messages.length} issues`);
-                
-                for (const message of result.messages) {
-                  const ruleName = message.ruleId || 'unknown-rule';
-                  const fileName = filePath.split('/').pop();
-                  const title = `[LINT] ${ruleName} violation in ${fileName}`;
-                  const body = `
-                  **File:** ${filePath}
-                  **Line:** ${message.line}
-                  **Column:** ${message.column}
-                  **Rule:** ${ruleName}
+                if (result.messages.length > 0) {
+                  const filePath = result.filePath.replace(/^\/github\/workspace\//, '');
+                  console.log(`Processing file: ${filePath}, found ${result.messages.length} issues`);
                   
-                  **Description:** ${message.message}
-                  `;
-                  
-                  console.log(`Creating issue: ${title}`);
-                  
-                  try {
-                    await github.rest.issues.create({
-                      owner: context.repo.owner,
-                      repo: context.repo.repo,
-                      title: title,
-                      body: body,
-                      labels: ['technical-debt'],
-                      assignees: [context.payload.pull_request.user.login]
-                    });
-                    console.log(`Issue created successfully for ${ruleName} in ${filePath}`);
-                  } catch (error) {
-                    console.error(`Error creating issue: ${error.message}`);
+                  for (const message of result.messages) {
+                    totalErrors++;
+                    const ruleName = message.ruleId || 'unknown-rule';
+                    const detail = `- **${filePath}** (Line ${message.line}, Col ${message.column}): ${message.message} [${ruleName}]`;
+                    violationDetails.push(detail);
                   }
                 }
               }
+
+              if (totalErrors > 0) {
+                const issueTitle = `ESLint Violations Found in PR #${prNumber}`;
+                issueBody = `Found ${totalErrors} ESLint violation(s) in Pull Request #${prNumber}:\n\n` + violationDetails.join('\n');
+                
+                console.log(`Creating issue: ${issueTitle}`);
+                await github.rest.issues.create({
+                  owner,
+                  repo,
+                  title: issueTitle,
+                  body: issueBody,
+                  // Optionally add labels, assignees etc.
+                  // labels: ['linting-error'] 
+                });
+                console.log("Successfully created summary issue.");
+              } else {
+                console.log("No ESLint violations found requiring an issue.");
+              }
+              
             } catch (error) {
-              console.error(`Error processing ESLint results: ${error.message}`);
-              console.error(error.stack);
+              console.error(`Error processing ESLint results or creating issue: ${error}`);
+              // Optional: Create an issue about the failure itself
+              // core.setFailed(`Action failed with error: ${error.message}`);
             }
+        id: create-issue
