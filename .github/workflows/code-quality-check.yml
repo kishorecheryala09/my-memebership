@@ -39,6 +39,7 @@ jobs:
           if [[ $JQ_EXIT_CODE -eq 0 && -n "$sanitized_eslint_output" && "$sanitized_eslint_output" != "null" ]]; then
             echo "ESLint produced valid JSON, outputting sanitized JSON."
             # Use sanitized output
+            echo "eslint-json=$sanitized_eslint_output"
             echo "eslint-json=$sanitized_eslint_output" >> "$GITHUB_OUTPUT"
           else
             echo "ESLint produced no output or invalid JSON (ESLint Exit: $ESLINT_EXIT_CODE, JQ Exit: $JQ_EXIT_CODE). Outputting empty array."
