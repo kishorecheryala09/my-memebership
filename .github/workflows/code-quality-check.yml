@@ -26,18 +26,22 @@ jobs:
         run: |
           # Run ESLint and capture the output, but don't fail the workflow if ESLint finds issues
           set +e
-          eslint_output=$(npx eslint --format json src/)
+          raw_eslint_output=$(npx eslint --format json src/)
           ESLINT_EXIT_CODE=$?
           set -e
           
-          # Check if the output has content (is not null or empty string)
-          # Also check if it's valid JSON starting with [
-          if [[ -n "$eslint_output" && "$eslint_output" == \[* ]]; then
-            echo "ESLint found issues, outputting JSON."
-            # Pass the JSON content directly via GITHUB_OUTPUT
-            echo "eslint-json=$eslint_output" >> "$GITHUB_OUTPUT"
+          # Sanitize and validate the JSON output using jq
+          # If jq succeeds (exit code 0), set the sanitized output
+          sanitized_eslint_output=$(echo "$raw_eslint_output" | jq -c .)
+          JQ_EXIT_CODE=$?
+
+          # Check if jq succeeded and the output is not empty/null
+          if [[ $JQ_EXIT_CODE -eq 0 && -n "$sanitized_eslint_output" && "$sanitized_eslint_output" != "null" ]]; then
+            echo "ESLint produced valid JSON, outputting sanitized JSON."
+            # Use sanitized output
+            echo "eslint-json=$sanitized_eslint_output" >> "$GITHUB_OUTPUT"
           else
-            echo "ESLint produced no output or invalid JSON (Exit Code: $ESLINT_EXIT_CODE). Outputting empty array."
+            echo "ESLint produced no output or invalid JSON (ESLint Exit: $ESLINT_EXIT_CODE, JQ Exit: $JQ_EXIT_CODE). Outputting empty array."
             echo "eslint-json=[]" >> "$GITHUB_OUTPUT"
           fi
           
