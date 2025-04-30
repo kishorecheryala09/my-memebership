@@ -26,34 +26,37 @@ jobs:
         run: |
           # Run ESLint and capture the output, but don't fail the workflow if ESLint finds issues
           set +e
-          npx eslint --format json src/ > eslint_results.json
+          eslint_output=$(npx eslint --format json src/)
           ESLINT_EXIT_CODE=$?
           set -e
           
-          # Check if the file exists and has content
-          if [ -s eslint_results.json ]; then
-            echo "ESLint found issues, but that's expected. Will create GitHub issues for them."
-            cat eslint_results.json | jq length
-            cat eslint_results.json > $GITHUB_WORKSPACE/eslint_results.json
+          # Check if the output has content (is not null or empty string)
+          # Also check if it's valid JSON starting with [
+          if [[ -n "$eslint_output" && "$eslint_output" == \[* ]]; then
+            echo "ESLint found issues, outputting JSON."
+            # Pass the JSON content directly via GITHUB_OUTPUT
+            echo "eslint-json=$eslint_output" >> "$GITHUB_OUTPUT"
           else
-            echo "ESLint didn't produce valid JSON output."
-            echo "[]" > $GITHUB_WORKSPACE/eslint_results.json
+            echo "ESLint produced no output or invalid JSON (Exit Code: $ESLINT_EXIT_CODE). Outputting empty array."
+            echo "eslint-json=[]" >> "$GITHUB_OUTPUT"
           fi
           
       - name: Create issues for ESLint violations
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
+          script: |-
             const fs = require('fs');
             
             try {
-              // Read the ESLint results from the file
-              const eslintResultsPath = `${process.env.GITHUB_WORKSPACE}/eslint_results.json`;
-              console.log(`Reading ESLint results from ${eslintResultsPath}`);
+              // Read the ESLint results from the step output
+              const eslintResultsContent = `${{ steps.eslint.outputs.eslint-json }}`;
+              console.log(`Raw ESLint results content length from output: ${eslintResultsContent.length}`);
               
-              const eslintResultsContent = fs.readFileSync(eslintResultsPath, 'utf8');
-              console.log(`ESLint results content length: ${eslintResultsContent.length}`);
+              if (!eslintResultsContent) {
+                console.log("ESLint results output is empty. No issues to create.");
+                return;
+              }
               
               const eslintResults = JSON.parse(eslintResultsContent);
               console.log(`Found ${eslintResults.length} files with potential issues`);
