@@ -18,9 +18,9 @@ jobs:
     if: github.event.inputs.feature == 'class_schedule'
     uses: ./.github/workflows/class_schedule.yml
     
-  class-schedule_w_shared_action:
-    if: github.event.inputs.feature == 'class_schedule_w_shared_action'
-    uses: ./.github/workflows/class_schedule_using_dvls_shared_action.yml
+  # class-schedule_w_shared_action:
+  #   if: github.event.inputs.feature == 'class_schedule_w_shared_action'
+  #   uses: ./.github/workflows/class_schedule_using_dvls_shared_action.yml
 
   membership:
     if: github.event.inputs.feature == 'membership'
